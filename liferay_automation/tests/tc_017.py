@@ -1,4 +1,3 @@
-import time
 import unittest
 
 from selenium.webdriver import Chrome
@@ -22,6 +21,8 @@ class ActivityAuto2(unittest.TestCase):
         self.home.insert_date_birth('11/11/1122')
         self.home.submit_form()
         assert not self.confirmation.is_in_information_page(), 'Form was sent with invalid date birth.'
+        assert self.home.is_invalid_data(), \
+            'The error message with \'Invalid data for date birth\' is not found.'
 
     def tearDown(self):
         self.home.close()

@@ -1,3 +1,4 @@
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -13,6 +14,7 @@ class LiferayFormsHomePage(PageElement):
     xpath_why_join_testing_area = "//div[@data-field-name='WhyDidYouJoinTheTestingArea']/div/textarea"
     xpath_birth_field_date = "//*[@class='date-picker']//*/input[@type='text']"
     xpath_birth_field_required_text = "//div[@data-field-name='WhatIsTheDateOfYourBirth']/div/span/div"
+    xpath_invalid_data = "//*[contains(text(), 'Invalid data.')]"
 
     def submit_form(self):
         self.webdriver.find_element(By.ID, 'ddm-form-submit').click()
@@ -36,4 +38,12 @@ class LiferayFormsHomePage(PageElement):
         # Verify text and color red.
         return field_element.text == 'This field is required.' and element_color == 'rgba(218, 20, 20, 1)'
 
+    def is_invalid_data(self):
+        try:
+            # Wait page load
+            WebDriverWait(self.webdriver, 20).until(lambda browser: self.webdriver.find_element_by_xpath(
+                self.xpath_invalid_data))
+            return True
+        except TimeoutException:
+            return False
 
